@@ -1,31 +1,26 @@
 import numpy as np
 
 def myImageFilter(img0, filter):
-    # Notes: are you going to apply this filter with a convolution or correlation operation?
-    # We will use correlation. This means we don't need to flip the filter beforehand.
-    
-    # Get dimensions
-    img_h, img_w = img0.shape
-    filt_h, filt_w = filter.shape
 
-    # Calculate padding sizes (assuming odd-sized filter)
-    pad_h = filt_h // 2
-    pad_w = filt_w // 2
+    # Notes: are you going to apply this filter with a convolution or correlation operation?
+    # This implementation applies the filter via correlation.
 
     # Pad input image based on size of filter
-    # 'edge' mode ensures boundary pixels have the same intensity as the nearest inside pixel
+    # Using 'edge' mode to ensure pixels lying outside have the same intensity as the nearest pixel
+    filt_h, filt_w = filter.shape
+    pad_h = filt_h // 2
+    pad_w = filt_w // 2
     img_padded = np.pad(img0, ((pad_h, pad_h), (pad_w, pad_w)), mode='edge')
-    
-    # Initialize output image
-    imgOut = np.zeros_like(img0, dtype=np.float32)
 
     # Apply filter on the image
     # Make sure the output image is the same size as the input
-    # Vectorized approach: loop over the small filter instead of the large image
+    img_h, img_w = img0.shape
+    imgOut = np.zeros_like(img0, dtype=np.float32)
+
+    # Vectorized correlation: looping over filter dimensions
     for i in range(filt_h):
         for j in range(filt_w):
-            # Multiply the scalar filter weight by the corresponding shifted image slice
-            imgOut += img_padded[i:i+img_h, j:j+img_w] * filter[i, j]
+            imgOut += img_padded[i : i + img_h, j : j + img_w] * filter[i, j]
 
     return imgOut
 
@@ -56,15 +51,14 @@ def myImageFFTFilter(img0, filter):
     filter_fft = np.fft.fft2(filter_padded)
 
     # Apply filter onto image
-    # In the frequency domain, convolution/correlation becomes simple element-wise multiplication
     result_fft = img_fft * filter_fft
 
     # Transform result into image space domain
     # and shift for correct orientation of origin
     imgOut_complex = np.fft.ifft2(result_fft)
     imgOut_shifted = np.fft.fftshift(imgOut_complex)
-    
-    # Retrieve the real number components
+
+    # Retrieve real components
     imgOut = np.real(imgOut_shifted)
 
     return imgOut

@@ -15,10 +15,10 @@ fig, ax = plt.subplots(figsize=(5, 5))
 
 """ COMPLETE """
 theta = np.linspace(0, 2*np.pi, 1000)
-# for x0, y0 in points:
-#     # Calculate rho for each theta using the normal form equation:
-
-#     ax.plot(theta, rho, label=f'Point ({x0},{y0})')
+for x0, y0 in points:
+    # Calculate rho for each theta using the normal form equation:
+    rho = x0 * np.cos(theta) + y0 * np.sin(theta)
+    ax.plot(theta, rho, label=f'Point ({x0},{y0})')
 
 ax.grid(True)
 ax.set_xlabel('θ (radians)')
@@ -34,9 +34,11 @@ ax.xaxis.set_major_formatter(tck.FuncFormatter(
 ))
 
 """ COMPLETE """
-# intersection_theta =
+intersection_theta = 0.75 * np.pi
 intersection_rho = points[0][0] * np.cos(intersection_theta) + points[0][1] * np.sin(intersection_theta)
 ax.plot(intersection_theta, intersection_rho, 'ro', 
          label=r'Intersection point')
 
-plt.show()
+plt.legend()
+plt.savefig('q2_1_plot.png', bbox_inches='tight')
+print("Success: Plot saved as q2_1_plot.png")

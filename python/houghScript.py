@@ -76,9 +76,10 @@ for file in os.listdir(datadir):
             cv2.line(img_lines,(x1,y1),(x2,y2),(0,0,255),1)
 
         # display line segment results from cv2.HoughLinesP in green
-        for line in lines:
-            coords = line[0]
-            cv2.line(img_lines, (coords[0], coords[1]), (coords[2], coords[3]), \
-                     (0, 255, 0), 1)
+        if lines is not None:
+            for line in lines:
+                coords = line[0]
+                cv2.line(img_lines, (coords[0], coords[1]), (coords[2], coords[3]), \
+                         (0, 255, 0), 1)
 
         cv2.imwrite(fname, 255 * img_lines)
